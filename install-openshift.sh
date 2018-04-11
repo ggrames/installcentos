@@ -26,6 +26,8 @@ python-cryptography pyOpenSSL.x86_64 python2-pip \
 openssl-devel python-devel httpd-tools NetworkManager python-passlib \
 java-1.8.0-openjdk-headless "@Development Tools"
 
+git config --global http.proxy http_proxy=$TProxy
+git config --global https.proxy https_proxy=$TProxy
 systemctl | grep "NetworkManager.*running" 
 if [ $? -eq 1 ]; then
 	systemctl start NetworkManager
@@ -83,7 +85,7 @@ if [ "$memory" -lt "8388608" ]; then
 	export LOGGING="False"
 fi
 
-curl -o inventory.download $SCRIPT_REPO/inventory.ini
+curl -o inventory.download -x $TProxy $SCRIPT_REPO/inventory.ini
 envsubst < inventory.download > inventory.ini
 ansible-playbook -i inventory.ini openshift-ansible/playbooks/byo/config.yml
 
