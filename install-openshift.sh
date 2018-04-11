@@ -7,7 +7,7 @@ export USERNAME=${USERNAME:="$(whoami)"}
 export PASSWORD=${PASSWORD:=password}
 export VERSION=${VERSION:="v3.7.1"}
 
-export SCRIPT_REPO=${SCRIPT_REPO:="https://raw.githubusercontent.com/gshipley/installcentos/master"}
+export SCRIPT_REPO=${SCRIPT_REPO:="https://raw.githubusercontent.com/ggrames/installcentos/master"}
 
 export IP="$(ip route get 8.8.8.8 | awk '{print $NF; exit}')"
 export API_PORT=${API_PORT:="8443"}
@@ -34,7 +34,7 @@ fi
 
 which ansible || pip install -Iv ansible
 
-[ ! -d openshift-ansible ] && git clone https://github.com/openshift/openshift-ansible.git
+[ ! -d openshift-ansible ] && git clone https://github.com/ggrames/openshift-ansible.git
 
 cd openshift-ansible && git fetch && git checkout release-3.7 && cd ..
 
