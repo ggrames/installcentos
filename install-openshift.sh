@@ -6,9 +6,9 @@ export DOMAIN=${DOMAIN:="$(curl ipinfo.io/ip).nip.io"}
 export USERNAME=${USERNAME:="$(whoami)"}
 export PASSWORD=${PASSWORD:=password}
 export VERSION=${VERSION:="v3.7.1"}
-export $TPROXY=${TPROXY:=""}
+export TPROXY=${TPROXY:=""}
 
-export SCRIPT_REPO=${SCRIPT_REPO:="https://raw.githubusercontent.com/gshipley/installcentos/master"}
+export SCRIPT_REPO=${SCRIPT_REPO:="https://raw.githubusercontent.com/ggrames/installcentos/master"}
 
 export IP="$(ip route get 8.8.8.8 | awk '{print $NF; exit}')"
 export API_PORT=${API_PORT:="8443"}
@@ -18,6 +18,7 @@ echo "* Your domain is $DOMAIN "
 echo "* Your username is $USERNAME "
 echo "* Your password is $PASSWORD "
 echo "* OpenShift version: $VERSION "
+echo "* Your used proxy is $TPROXY "
 echo "******"
 
 yum install -y epel-release
@@ -25,13 +26,14 @@ yum install -y epel-release
 export http_proxy=$TPROXY
 export https_proxy=$TPROXY
 
-echo "proxy=$TPROXY" >> /etc/yum.conf
-
 yum update -y
 yum install -y git wget zile nano net-tools docker-1.12.6 \
 python-cryptography pyOpenSSL.x86_64 python2-pip \
 openssl-devel python-devel httpd-tools NetworkManager python-passlib \
 java-1.8.0-openjdk-headless "@Development Tools"
+
+git config --global http.proxy $TPROXY
+git config --global https.proxy $TPROXY
 
 systemctl | grep "NetworkManager.*running"
 if [ $? -eq 1 ]; then
