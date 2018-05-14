@@ -52,7 +52,7 @@ fi
 # install the packages for Ansible
 yum -y --enablerepo=epel install ansible pyOpenSSL
 
-[ ! -d openshift-ansible ] && git clone https://github.com/openshift/openshift-ansible.git
+[ ! -d openshift-ansible ] && git clone https://github.com/ggrames/openshift-ansible.git
 
 cd openshift-ansible && git fetch && git checkout release-3.7 && cd ..
 
