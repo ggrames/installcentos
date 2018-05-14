@@ -119,8 +119,8 @@ oc adm policy add-cluster-role-to-user cluster-admin ${USERNAME}
 
 systemctl restart origin-master-api
 
-unset http_proxy
-unset https_proxy
+#unset http_proxy
+#unset https_proxy
 
 echo "******"
 
