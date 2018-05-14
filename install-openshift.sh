@@ -10,27 +10,35 @@ export TPROXY=${TPROXY:=""}
 
 export SCRIPT_REPO=${SCRIPT_REPO:="https://raw.githubusercontent.com/ggrames/installcentos/master"}
 
-export IP="$(ip route get 8.8.8.8 | awk '{print $NF; exit}')"
+export IP=${IP:="$(ip route get 8.8.8.8 | awk '{print $NF; exit}')"}
 export API_PORT=${API_PORT:="8443"}
 
 echo "******"
 echo "* Your domain is $DOMAIN "
+echo "* Your IP is $IP "
 echo "* Your username is $USERNAME "
 echo "* Your password is $PASSWORD "
 echo "* OpenShift version: $VERSION "
 echo "* Your used proxy is $TPROXY "
 echo "******"
 
-yum install -y epel-release
-
 export http_proxy=$TPROXY
 export https_proxy=$TPROXY
 
-yum update -y
-yum install -y git wget zile nano net-tools docker-1.12.6 \
-python-cryptography pyOpenSSL.x86_64 python2-pip \
-openssl-devel python-devel httpd-tools NetworkManager python-passlib \
-java-1.8.0-openjdk-headless "@Development Tools"
+# install the following base packages
+yum install -y  wget git zile nano net-tools docker-1.13.1\
+				bind-utils iptables-services \
+				bridge-utils bash-completion \
+				kexec-tools sos psacct openssl-devel \
+				httpd-tools NetworkManager \
+				python-cryptography python2-pip python-devel  python-passlib \
+				java-1.8.0-openjdk-headless "@Development Tools"
+
+#install epel
+yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+
+# Disable the EPEL repository globally so that is not accidentally used during later steps of the installation
+sed -i -e "s/^enabled=1/enabled=0/" /etc/yum.repos.d/epel.repo
 
 git config --global http.proxy $TPROXY
 git config --global https.proxy $TPROXY
@@ -41,7 +49,8 @@ if [ $? -eq 1 ]; then
         systemctl enable NetworkManager
 fi
 
-which ansible || pip install -Iv ansible
+# install the packages for Ansible
+yum -y --enablerepo=epel install ansible pyOpenSSL
 
 [ ! -d openshift-ansible ] && git clone https://github.com/openshift/openshift-ansible.git
 
